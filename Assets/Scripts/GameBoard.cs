@@ -15,7 +15,11 @@ public class GameBoard : MonoBehaviour
     private Node[,] gemBoard;
     public GameObject gemBoardGO;
 
-    //public ArrayLayout arrayLayout;
+    private List<GameObject> gemsToDestroy = new();
+
+    [SerializeField] private Gems selectedGem;
+    [SerializeField] private bool isProcessingMove;
+
     public static GameBoard instance;
 
     private void Awake()
@@ -28,8 +32,30 @@ public class GameBoard : MonoBehaviour
         InitialliseBoard();
     }
 
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction);
+
+            if (hit.collider != null && hit.collider.gameObject.GetComponent<Gems>())
+            {
+                if (isProcessingMove)
+                {
+                    return;
+                }
+                Gems gem = hit.collider.gameObject.GetComponent<Gems>();
+                Debug.Log("I have clicked a gem, it is: " + gem.gameObject);
+
+                SelectGem(gem);
+            }
+        }
+    }
+
     void InitialliseBoard()
     {
+        DestroyGems();
         gemBoard = new Node[width, height];
 
         spacingX = (float)((width - 1) / 2) + 3;
@@ -45,9 +71,31 @@ public class GameBoard : MonoBehaviour
                 GameObject gem = Instantiate(gemPrefabs[randomIndex], position, Quaternion.identity);
                 gem.GetComponent<Gems>().SetIndices(x, y);
                 gemBoard[x, y] = new Node(true, gem);
+                gemsToDestroy.Add(gem);
             }
         }
-        CheckBoard();
+
+        if (CheckBoard())
+        {
+            Debug.Log("There are matches, re-initialising the board..");
+            InitialliseBoard();
+        }
+        else
+        {
+            Debug.Log("There are no matches, starting game..");
+        }
+    }
+
+    private void DestroyGems()
+    {
+        if (gemsToDestroy != null)
+        {
+            foreach (GameObject gem in gemsToDestroy)
+            {
+                Destroy(gem);
+            }
+            gemsToDestroy.Clear();
+        }
     }
 
     public bool CheckBoard()
@@ -188,6 +236,74 @@ public class GameBoard : MonoBehaviour
             }
         }
     }
+
+    public void SelectGem(Gems gem)
+    {
+        if (selectedGem == null)
+        {
+            Debug.Log(gem);
+            selectedGem = gem;
+        }
+        else if (selectedGem == gem)
+        {
+            selectedGem = null;
+        }
+        else if (selectedGem != gem)
+        {
+            SwapGem(selectedGem, gem);
+            selectedGem = null;
+        }
+    }
+
+    private void SwapGem(Gems currentGem, Gems targetGem)
+    {
+        if (!IsAdjacent(currentGem, targetGem))
+        {
+            return;
+        }
+
+        DoSwap(currentGem, targetGem);
+
+        isProcessingMove = true;
+
+        StartCoroutine(ProcessMatches(currentGem, targetGem));
+    }
+
+    private void DoSwap(Gems currentGem, Gems targetGem)
+    {
+        GameObject temp = gemBoard[currentGem.xIndex, currentGem.yIndex].gem;
+
+        gemBoard[currentGem.xIndex, currentGem.yIndex].gem = gemBoard[targetGem.xIndex, targetGem.yIndex].gem;
+        gemBoard[targetGem.xIndex, targetGem.yIndex].gem = temp;
+
+        int tempXIndex = currentGem.xIndex;
+        int tempYIndex = currentGem.yIndex;
+        currentGem.xIndex = targetGem.xIndex;
+        currentGem.yIndex = targetGem.yIndex;
+        targetGem.xIndex = tempXIndex;
+        targetGem.yIndex = tempYIndex;
+
+        currentGem.MoveToTarget(gemBoard[targetGem.xIndex, targetGem.yIndex].gem.transform.position);
+        targetGem.MoveToTarget(gemBoard[currentGem.xIndex, currentGem.yIndex].gem.transform.position);
+    }
+    private bool IsAdjacent(Gems currentGem, Gems targetGem)
+    {
+        return Mathf.Abs(currentGem.xIndex - targetGem.xIndex) + Mathf.Abs(currentGem.yIndex - targetGem.yIndex) == 1;
+    }
+
+    private IEnumerator ProcessMatches(Gems currentGem, Gems targetGem)
+    {
+        yield return new WaitForSeconds(0.2f);
+
+        bool hasMatch = CheckBoard();
+
+        if (!hasMatch)
+        {
+            DoSwap(currentGem, targetGem);
+        }
+        isProcessingMove = false;
+    }
+
 }
 
 public class MatchResult
