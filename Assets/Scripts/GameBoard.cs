@@ -12,10 +12,11 @@ public class GameBoard : MonoBehaviour
 
     public GameObject[] gemPrefabs;
 
-    private Node[,] gemBoard;
+    public Node[,] gemBoard;
     public GameObject gemBoardGO;
 
-    private List<GameObject> gemsToDestroy = new();
+    public List<GameObject> gemsToDestroy = new();
+    public GameObject gemParent;
 
     [SerializeField] private Gems selectedGem;
     [SerializeField] private bool isProcessingMove;
@@ -69,13 +70,14 @@ public class GameBoard : MonoBehaviour
                 int randomIndex = Random.Range(0, gemPrefabs.Length);
 
                 GameObject gem = Instantiate(gemPrefabs[randomIndex], position, Quaternion.identity);
+                gem.transform.SetParent(gemParent.transform);
                 gem.GetComponent<Gems>().SetIndices(x, y);
                 gemBoard[x, y] = new Node(true, gem);
                 gemsToDestroy.Add(gem);
             }
         }
 
-        if (CheckBoard())
+        if (CheckBoard(false))
         {
             Debug.Log("There are matches, re-initialising the board..");
             InitialliseBoard();
@@ -98,12 +100,20 @@ public class GameBoard : MonoBehaviour
         }
     }
 
-    public bool CheckBoard()
+    public bool CheckBoard(bool _takeAction)
     {
         Debug.Log("Checking");
         bool hasMatched = false;
 
         List<Gems> gemsToRemove = new();
+
+        foreach (Node nodeGem in gemBoard)
+        {
+            if (nodeGem.gem != null)
+            {
+                nodeGem.gem.GetComponent<Gems>().isMatched = false;
+            }
+        }
 
         for (int x = 0; x < width; x++)
         {
@@ -119,10 +129,12 @@ public class GameBoard : MonoBehaviour
 
                         if (matchedGems.connectedGems.Count >= 3)
                         {
-                            gemsToRemove.AddRange(matchedGems.connectedGems);
-                            foreach (Gems gemItem in matchedGems.connectedGems)
+                            MatchResult superMatchedGems = SuperMatch(matchedGems);
+
+                            gemsToRemove.AddRange(superMatchedGems.connectedGems);
+                            foreach (Gems gemItem in superMatchedGems.connectedGems)
                             {
-                                gem.isMatched = true;
+                                gemItem.isMatched = true;
                             }
 
                             hasMatched = true;
@@ -133,7 +145,161 @@ public class GameBoard : MonoBehaviour
             }
         }
 
+        if (_takeAction)
+        {
+
+            foreach (Gems gemToRemove in gemsToRemove)
+            {
+                gemToRemove.isMatched = false;
+            }
+
+            RemoveAndRefill(gemsToRemove);
+
+            if (CheckBoard(false))
+            {
+                CheckBoard(true);
+            }
+        }
+
         return hasMatched;
+    }
+
+    private void RemoveAndRefill(List<Gems> gemsToRemove)
+    {
+        foreach (Gems gem in gemsToRemove)
+        {
+            int _xIndex = gem.xIndex;
+            int _yIndex = gem.yIndex;
+
+            Destroy(gem.gameObject);
+
+            gemBoard[_xIndex, _yIndex] = new Node(true, null);
+        }
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                if (gemBoard[x, y].gem == null)
+                {
+                    Debug.Log("The location x: " + x + " y: " + y + " is empty, attempting to refill");
+                    RefillGem(x, y);
+                }
+            }
+        }
+    }
+
+    private void RefillGem(int x, int y)
+    {
+        int yOffset = 1;
+
+        while (y + yOffset < height && gemBoard[x, y + yOffset].gem == null)
+        {
+            yOffset++;
+        }
+
+        if (y + yOffset < height && gemBoard[x, y + yOffset].gem != null)
+        {
+            Gems gemAbove = gemBoard[x, y + yOffset].gem.GetComponent<Gems>();
+            Vector3 targetPos = new Vector3(x - spacingX, y - spacingY, gemAbove.transform.position.z);
+            gemAbove.MoveToTarget(targetPos);
+            gemAbove.SetIndices(x, y);
+            gemBoard[x, y] = gemBoard[x, y + yOffset];
+
+            gemBoard[x, y + yOffset] = new Node(true, null);
+        }
+
+        if (y + yOffset == height)
+        {
+            SpawnGemAtTop(x);
+        }
+    }
+
+    private void SpawnGemAtTop(int x)
+    {
+        int index = FindIndexOfLowestNull(x);
+        int locationToMoveTo = 8 - index;
+
+        int randomIndex = Random.Range(0, gemPrefabs.Length);
+        GameObject newGem = Instantiate(gemPrefabs[randomIndex], new Vector2(x - spacingX, height - spacingY), Quaternion.identity);
+        newGem.transform.SetParent(gemParent.transform);
+        newGem.GetComponent<Gems>().SetIndices(x, index);
+        gemBoard[x, index] = new Node(true, newGem);
+        Vector3 targetPos = new Vector3(newGem.transform.position.x, newGem.transform.position.y - locationToMoveTo, newGem.transform.position.z);
+        newGem.GetComponent<Gems>().MoveToTarget(targetPos);
+    }
+
+    private int FindIndexOfLowestNull(int x)
+    {
+        int lowestNull = 99;
+        for (int y = 7; y >= 0; y--)
+        {
+            if (gemBoard[x, y].gem == null)
+            {
+                lowestNull = y;
+            }
+        }
+        return lowestNull;
+    }
+
+    //cascading gems
+
+
+    private MatchResult SuperMatch(MatchResult _matchedResults)
+    {
+        if (_matchedResults.matchDirection == MatchDirection.Horizontal || _matchedResults.matchDirection == MatchDirection.LongHorizontal)
+        {
+            foreach (Gems gem in _matchedResults.connectedGems)
+            {
+                List<Gems> extraConnnectedGems = new();
+                CheckDirection(gem, new Vector2Int(0, 1), extraConnnectedGems);
+                CheckDirection(gem, new Vector2Int(0, -1), extraConnnectedGems);
+
+                if (extraConnnectedGems.Count >= 2)
+                {
+                    Debug.Log("I have a super horizontal match");
+                    extraConnnectedGems.AddRange(_matchedResults.connectedGems);
+
+                    return new MatchResult
+                    {
+                        connectedGems = extraConnnectedGems,
+                        matchDirection = MatchDirection.Combined,
+                    };
+                }
+            }
+            return new MatchResult
+            {
+                connectedGems = _matchedResults.connectedGems,
+                matchDirection = _matchedResults.matchDirection
+            };
+        }
+        else if (_matchedResults.matchDirection == MatchDirection.Vertical || _matchedResults.matchDirection == MatchDirection.LongVertical)
+        {
+            foreach (Gems gem in _matchedResults.connectedGems)
+            {
+                List<Gems> extraConnnectedGems = new();
+                CheckDirection(gem, new Vector2Int(1, 0), extraConnnectedGems);
+                CheckDirection(gem, new Vector2Int(-1, 0), extraConnnectedGems);
+
+                if (extraConnnectedGems.Count >= 2)
+                {
+                    Debug.Log("I have a super vertical match");
+                    extraConnnectedGems.AddRange(_matchedResults.connectedGems);
+
+                    return new MatchResult
+                    {
+                        connectedGems = extraConnnectedGems,
+                        matchDirection = MatchDirection.Combined,
+                    };
+                }
+            }
+            return new MatchResult
+            {
+                connectedGems = _matchedResults.connectedGems,
+                matchDirection = _matchedResults.matchDirection
+            };
+        }
+        return null;
     }
 
     MatchResult IsConnected(Gems gem)
@@ -295,7 +461,7 @@ public class GameBoard : MonoBehaviour
     {
         yield return new WaitForSeconds(0.2f);
 
-        bool hasMatch = CheckBoard();
+        bool hasMatch = CheckBoard(true);
 
         if (!hasMatch)
         {
