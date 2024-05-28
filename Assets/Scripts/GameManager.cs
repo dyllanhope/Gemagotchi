@@ -53,6 +53,7 @@ public class GameManager : MonoBehaviour
 
             backgroundPanel.SetActive(true);
             victoryPanel.SetActive(true);
+            GameBoard.instance.gemParent.SetActive(false);
             return;
         }
         if (moves == 0)
@@ -61,6 +62,7 @@ public class GameManager : MonoBehaviour
 
             backgroundPanel.SetActive(true);
             losePanel.SetActive(true);
+            GameBoard.instance.gemParent.SetActive(false);
             return;
         }
     }

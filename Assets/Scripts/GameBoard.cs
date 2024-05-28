@@ -20,6 +20,7 @@ public class GameBoard : MonoBehaviour
 
     [SerializeField] private Gems selectedGem;
     [SerializeField] private bool isProcessingMove;
+    [SerializeField] List<Gems> gemsToRemove = new();
 
     public static GameBoard instance;
 
@@ -77,7 +78,7 @@ public class GameBoard : MonoBehaviour
             }
         }
 
-        if (CheckBoard(false))
+        if (CheckBoard())
         {
             Debug.Log("There are matches, re-initialising the board..");
             InitialliseBoard();
@@ -100,12 +101,14 @@ public class GameBoard : MonoBehaviour
         }
     }
 
-    public bool CheckBoard(bool _takeAction)
+    public bool CheckBoard()
     {
-        Debug.Log("Checking");
+        if (GameManager.Instance.isGameEnded)
+            return false;
+
         bool hasMatched = false;
 
-        List<Gems> gemsToRemove = new();
+        gemsToRemove.Clear();
 
         foreach (Node nodeGem in gemBoard)
         {
@@ -145,23 +148,25 @@ public class GameBoard : MonoBehaviour
             }
         }
 
-        if (_takeAction)
+        return hasMatched;
+    }
+
+    public IEnumerator ProcessTurnInMatchedBoard(bool _subtract)
+    {
+        foreach (Gems gemToRemove in gemsToRemove)
         {
-
-            foreach (Gems gemToRemove in gemsToRemove)
-            {
-                gemToRemove.isMatched = false;
-            }
-
-            RemoveAndRefill(gemsToRemove);
-
-            if (CheckBoard(false))
-            {
-                CheckBoard(true);
-            }
+            gemToRemove.isMatched = false;
         }
 
-        return hasMatched;
+        RemoveAndRefill(gemsToRemove);
+        GameManager.Instance.ProcessTurn(gemsToRemove.Count, _subtract);
+        yield return new WaitForSeconds(0.4f);
+
+
+        if (CheckBoard())
+        {
+            StartCoroutine(ProcessTurnInMatchedBoard(false));
+        }
     }
 
     private void RemoveAndRefill(List<Gems> gemsToRemove)
@@ -461,9 +466,13 @@ public class GameBoard : MonoBehaviour
     {
         yield return new WaitForSeconds(0.2f);
 
-        bool hasMatch = CheckBoard(true);
+        bool hasMatch = CheckBoard();
 
-        if (!hasMatch)
+        if (CheckBoard())
+        {
+            StartCoroutine(ProcessTurnInMatchedBoard(true));
+        }
+        else
         {
             DoSwap(currentGem, targetGem);
         }

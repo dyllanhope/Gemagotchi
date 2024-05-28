@@ -674,6 +674,7 @@ MonoBehaviour:
   gemParent: {fileID: 1013541826}
   selectedGem: {fileID: 0}
   isProcessingMove: 0
+  gemsToRemove: []
 --- !u!1 &717178633
 GameObject:
   m_ObjectHideFlags: 0
@@ -1531,7 +1532,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!224 &1185064163
 RectTransform:
