@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -52,6 +53,8 @@ public class GameManager : MonoBehaviour
             isGameEnded = true;
 
             backgroundPanel.SetActive(true);
+            TextMeshProUGUI messageText = FetchDisplayMessageObject(victoryPanel, "CongratsText");
+            messageText.text = "Congratulations, you got " + points + " points in x moves!";
             victoryPanel.SetActive(true);
             GameBoard.instance.gemParent.SetActive(false);
             return;
@@ -61,10 +64,27 @@ public class GameManager : MonoBehaviour
             isGameEnded = true;
 
             backgroundPanel.SetActive(true);
+            TextMeshProUGUI messageText = FetchDisplayMessageObject(losePanel, "MessageText");
+            messageText.text = "Unfortunately you only got " + points + " points in x moves!";
             losePanel.SetActive(true);
             GameBoard.instance.gemParent.SetActive(false);
             return;
         }
+    }
+
+    public TextMeshProUGUI FetchDisplayMessageObject(GameObject panel, string childName)
+    {
+        TextMeshProUGUI[] children = panel.GetComponentsInChildren<TextMeshProUGUI>();
+
+        foreach (TextMeshProUGUI child in children)
+        {
+            if (child.name == childName)
+            {
+                return child;
+            }
+        }
+
+        return null;
     }
 
     public void WinGame()
