@@ -97,7 +97,7 @@ ScriptedImporter:
     addSortingGroup: 1
     addShadowCasters: 0
   importFileNodeState: 1
-  platformSettingsDirtyTick: 638526026757988864
+  platformSettingsDirtyTick: 638526991226912134
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -132,7 +132,7 @@ ScriptedImporter:
       y: 4
       width: 26
       height: 30
-    spriteID: 9f84681c309a27b45ad0babb58e9e1ae
+    spriteID: a61f50abb358e634091a541d4f1dd4b0
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -152,7 +152,7 @@ ScriptedImporter:
       y: 42
       width: 26
       height: 30
-    spriteID: 9295578bae2dfce4fa118339c006aeed
+    spriteID: 662c80654054ca14da8a65a399a3e324
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -172,7 +172,7 @@ ScriptedImporter:
       y: 80
       width: 26
       height: 30
-    spriteID: f4cdd71c36face54fad8d8b4297b6d52
+    spriteID: 139fe2ea5c1ef3b43ac7515c683333a4
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -192,7 +192,7 @@ ScriptedImporter:
       y: 4
       width: 26
       height: 30
-    spriteID: 2ccd66c4570493b4c84062032fa30057
+    spriteID: d3ef7ac2aa0b50c41b076e2b26dc74a2
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -212,7 +212,7 @@ ScriptedImporter:
       y: 42
       width: 26
       height: 30
-    spriteID: 5c7176f7b95cfec42bc980ab306dc314
+    spriteID: 5ecbeef1267b84747a125dfae2b18f5f
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -232,7 +232,7 @@ ScriptedImporter:
       y: 80
       width: 26
       height: 30
-    spriteID: 3e2bb438b5b252644a9160d80f0a0f03
+    spriteID: 8fb65e7c9917f3944bd8435015f8be55
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -252,7 +252,7 @@ ScriptedImporter:
       y: 4
       width: 26
       height: 30
-    spriteID: 1b166032295e2c34b9fd37b565269e31
+    spriteID: 34532624f26173141a1075e20846634f
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -272,7 +272,7 @@ ScriptedImporter:
       y: 42
       width: 26
       height: 30
-    spriteID: 5450d7d42659dd541bcc50d343b1c926
+    spriteID: cd74014b9b7d39949b2c9656fb1ba235
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -297,7 +297,7 @@ ScriptedImporter:
         y: 1
         width: 26
         height: 30
-      spriteId: 9f84681c309a27b45ad0babb58e9e1ae
+      spriteId: a61f50abb358e634091a541d4f1dd4b0
     - name: PurpleGem_Frame_1
       frameIndex: 1
       cellRect:
@@ -305,7 +305,7 @@ ScriptedImporter:
         y: 1
         width: 26
         height: 30
-      spriteId: 9295578bae2dfce4fa118339c006aeed
+      spriteId: 662c80654054ca14da8a65a399a3e324
     - name: PurpleGem_Frame_2
       frameIndex: 2
       cellRect:
@@ -313,7 +313,7 @@ ScriptedImporter:
         y: 1
         width: 26
         height: 30
-      spriteId: f4cdd71c36face54fad8d8b4297b6d52
+      spriteId: 139fe2ea5c1ef3b43ac7515c683333a4
     - name: PurpleGem_Frame_3
       frameIndex: 3
       cellRect:
@@ -321,7 +321,7 @@ ScriptedImporter:
         y: 1
         width: 26
         height: 30
-      spriteId: 2ccd66c4570493b4c84062032fa30057
+      spriteId: d3ef7ac2aa0b50c41b076e2b26dc74a2
     - name: PurpleGem_Frame_4
       frameIndex: 4
       cellRect:
@@ -329,7 +329,7 @@ ScriptedImporter:
         y: 1
         width: 26
         height: 30
-      spriteId: 5c7176f7b95cfec42bc980ab306dc314
+      spriteId: 5ecbeef1267b84747a125dfae2b18f5f
     - name: PurpleGem_Frame_5
       frameIndex: 5
       cellRect:
@@ -337,7 +337,7 @@ ScriptedImporter:
         y: 1
         width: 26
         height: 30
-      spriteId: 3e2bb438b5b252644a9160d80f0a0f03
+      spriteId: 8fb65e7c9917f3944bd8435015f8be55
     - name: PurpleGem_Frame_6
       frameIndex: 6
       cellRect:
@@ -345,7 +345,7 @@ ScriptedImporter:
         y: 1
         width: 26
         height: 30
-      spriteId: 1b166032295e2c34b9fd37b565269e31
+      spriteId: 34532624f26173141a1075e20846634f
     - name: PurpleGem_Frame_7
       frameIndex: 7
       cellRect:
@@ -353,7 +353,7 @@ ScriptedImporter:
         y: 1
         width: 26
         height: 30
-      spriteId: 5450d7d42659dd541bcc50d343b1c926
+      spriteId: cd74014b9b7d39949b2c9656fb1ba235
     linkedCells: []
     parentIndex: -1
   platformSettings:
