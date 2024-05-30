@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -35,9 +36,9 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        pointsTxt.text = "Points: " + points.ToString();
-        movesTxt.text = "Moves: " + moves.ToString();
-        goalTxt.text = "Goal: " + goal.ToString();
+        pointsTxt.text = "Points: " + points.ToString("00");
+        movesTxt.text = "Moves: " + moves.ToString("00");
+        goalTxt.text = "Goal: " + goal.ToString("00");
     }
 
     public void ProcessTurn(int _pointsToGain, bool _subtractMoves)
@@ -52,7 +53,10 @@ public class GameManager : MonoBehaviour
             isGameEnded = true;
 
             backgroundPanel.SetActive(true);
+            TextMeshProUGUI messageText = FetchDisplayMessageObject(victoryPanel, "CongratsText");
+            messageText.text = "Congratulations, you got " + points + " points in x moves!";
             victoryPanel.SetActive(true);
+            GameBoard.instance.gemParent.SetActive(false);
             return;
         }
         if (moves == 0)
@@ -60,9 +64,27 @@ public class GameManager : MonoBehaviour
             isGameEnded = true;
 
             backgroundPanel.SetActive(true);
+            TextMeshProUGUI messageText = FetchDisplayMessageObject(losePanel, "MessageText");
+            messageText.text = "Unfortunately you only got " + points + " points in x moves!";
             losePanel.SetActive(true);
+            GameBoard.instance.gemParent.SetActive(false);
             return;
         }
+    }
+
+    public TextMeshProUGUI FetchDisplayMessageObject(GameObject panel, string childName)
+    {
+        TextMeshProUGUI[] children = panel.GetComponentsInChildren<TextMeshProUGUI>();
+
+        foreach (TextMeshProUGUI child in children)
+        {
+            if (child.name == childName)
+            {
+                return child;
+            }
+        }
+
+        return null;
     }
 
     public void WinGame()
