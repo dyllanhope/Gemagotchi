@@ -60,8 +60,8 @@ public class GameBoard : MonoBehaviour
         DestroyGems();
         gemBoard = new Node[width, height];
 
-        spacingX = (float)((width - 1) / 2) + 3;
-        spacingY = (float)(height - 1) / 2;
+        spacingX = (float)((width - 1) / 2) + 5.25f;
+        spacingY = (float)(height - 1) / 2 + 0.85f;
 
         for (int y = 0; y < height; y++)
         {
