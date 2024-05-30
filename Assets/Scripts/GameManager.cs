@@ -36,9 +36,9 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        pointsTxt.text = "Points: " + points.ToString();
-        movesTxt.text = "Moves: " + moves.ToString();
-        goalTxt.text = "Goal: " + goal.ToString();
+        pointsTxt.text = "Points: " + points.ToString("00");
+        movesTxt.text = "Moves: " + moves.ToString("00");
+        goalTxt.text = "Goal: " + goal.ToString("00");
     }
 
     public void ProcessTurn(int _pointsToGain, bool _subtractMoves)
