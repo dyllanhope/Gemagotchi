@@ -9,6 +9,12 @@ public class MamaGotchiManager : MonoBehaviour
 
     int currentIndex = -1;
 
+    AudioPlayer player;
+
+    private void Awake()
+    {
+        player = FindObjectOfType<AudioPlayer>();
+    }
     private void Start()
     {
         GetComponent<SpriteRenderer>().sprite = null;
@@ -24,6 +30,7 @@ public class MamaGotchiManager : MonoBehaviour
         {
             ParticleSystem instance = Instantiate(upgradeParticles, transform.position, Quaternion.identity);
             instance.Play();
+            player.PlayPartyHornClips();
             Destroy(instance.gameObject, instance.main.duration + instance.main.startLifetime.constantMax);
         }
     }
