@@ -24,9 +24,12 @@ public class GameBoard : MonoBehaviour
 
     public static GameBoard instance;
 
+    AudioPlayer audioPlayer;
+
     private void Awake()
     {
         instance = this;
+        audioPlayer = FindObjectOfType<AudioPlayer>();
     }
 
     void Start()
@@ -456,6 +459,7 @@ public class GameBoard : MonoBehaviour
 
         currentGem.MoveToTarget(gemBoard[targetGem.xIndex, targetGem.yIndex].gem.transform.position);
         targetGem.MoveToTarget(gemBoard[currentGem.xIndex, currentGem.yIndex].gem.transform.position);
+        audioPlayer.PlaySwappingClip();
     }
     private bool IsAdjacent(Gems currentGem, Gems targetGem)
     {
