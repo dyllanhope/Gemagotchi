@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
 
     public int goal;
     public int moves;
+    public int totalMoves;
     public int points;
 
     public bool isGameEnded;
@@ -29,6 +30,11 @@ public class GameManager : MonoBehaviour
     {
         Instance = this;
         mamaGotchiManager = FindObjectOfType<MamaGotchiManager>();
+    }
+
+    private void Start()
+    {
+        totalMoves = moves;
     }
 
     public void Initialize(int _moves, int _goal)
@@ -89,7 +95,7 @@ public class GameManager : MonoBehaviour
 
             backgroundPanel.SetActive(true);
             TextMeshProUGUI messageText = FetchDisplayMessageObject(victoryPanel, "CongratsText");
-            messageText.text = "Congratulations, you got " + points + " points in x moves!";
+            messageText.text = "Congratulations, you got " + points + " points in under " + totalMoves + " moves!";
             victoryPanel.SetActive(true);
             GameBoard.instance.gemParent.SetActive(false);
             return;
@@ -100,7 +106,7 @@ public class GameManager : MonoBehaviour
 
             backgroundPanel.SetActive(true);
             TextMeshProUGUI messageText = FetchDisplayMessageObject(losePanel, "MessageText");
-            messageText.text = "Unfortunately you only got " + points + " points in x moves!";
+            messageText.text = "Unfortunately you only got " + points + " points in under " + totalMoves + " moves!";
             losePanel.SetActive(true);
             GameBoard.instance.gemParent.SetActive(false);
             return;
