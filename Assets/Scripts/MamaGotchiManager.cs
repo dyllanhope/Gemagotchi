@@ -5,43 +5,35 @@ using UnityEngine;
 public class MamaGotchiManager : MonoBehaviour
 {
     [SerializeField] List<Sprite> spriteList = new();
+    [SerializeField] ParticleSystem upgradeParticles;
 
-    GameManager gameManager;
+    int currentIndex = -1;
 
-    private void Awake()
+    private void Start()
     {
-        gameManager = FindObjectOfType<GameManager>();
+        GetComponent<SpriteRenderer>().sprite = null;
     }
 
-    private void Update()
+    public void UpgradeMamaGatchi()
     {
-        CheckMamaGatchiType();
+        currentIndex++;
+
+        GetComponent<SpriteRenderer>().sprite = spriteList[currentIndex];
+
+        if (upgradeParticles != null)
+        {
+            ParticleSystem instance = Instantiate(upgradeParticles, transform.position, Quaternion.identity);
+            instance.Play();
+            Destroy(instance.gameObject, instance.main.duration + instance.main.startLifetime.constantMax);
+        }
     }
 
-    public void CheckMamaGatchiType()
+    public int GetCurrentIndex()
     {
-        var points = gameManager.points;
-        var goal = gameManager.goal;
-
-        if (points >= goal * 0.2)
-        {
-            GetComponent<SpriteRenderer>().sprite = spriteList[0];
-        }
-        if (points >= goal * 0.4)
-        {
-            GetComponent<SpriteRenderer>().sprite = spriteList[1];
-        }
-        if (points >= goal * 0.6)
-        {
-            GetComponent<SpriteRenderer>().sprite = spriteList[2];
-        }
-        if (points >= goal * 0.8)
-        {
-            GetComponent<SpriteRenderer>().sprite = spriteList[3];
-        }
-        if (points >= goal * 0.95)
-        {
-            GetComponent<SpriteRenderer>().sprite = spriteList[4];
-        }
+        return currentIndex;
+    }
+    public void SetCurrentIndex(int newIndex)
+    {
+        currentIndex = newIndex;
     }
 }

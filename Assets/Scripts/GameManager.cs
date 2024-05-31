@@ -23,9 +23,12 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI movesTxt;
     public TextMeshProUGUI goalTxt;
 
+    MamaGotchiManager mamaGotchiManager;
+
     private void Awake()
     {
         Instance = this;
+        mamaGotchiManager = FindObjectOfType<MamaGotchiManager>();
     }
 
     public void Initialize(int _moves, int _goal)
@@ -40,10 +43,42 @@ public class GameManager : MonoBehaviour
         movesTxt.text = "Moves: " + moves.ToString("00");
         goalTxt.text = "Goal: " + goal.ToString("00");
     }
+    public void CheckMamaGatchiUpgrade()
+    {
+        int tempIndex = -1;
+        int currentIndex = mamaGotchiManager.GetCurrentIndex();
+
+        if (points >= goal * 0.2)
+        {
+            tempIndex = 0;
+        }
+        if (points >= goal * 0.4)
+        {
+            tempIndex = 1;
+        }
+        if (points >= goal * 0.6)
+        {
+            tempIndex = 2;
+        }
+        if (points >= goal * 0.8)
+        {
+            tempIndex = 3;
+        }
+        if (points >= goal * 0.95)
+        {
+            tempIndex = 4;
+        }
+
+        if (tempIndex > currentIndex)
+        {
+            mamaGotchiManager.UpgradeMamaGatchi();
+        }
+    }
 
     public void ProcessTurn(int _pointsToGain, bool _subtractMoves)
     {
         points += _pointsToGain;
+        CheckMamaGatchiUpgrade();
         if (_subtractMoves)
         {
             moves--;
