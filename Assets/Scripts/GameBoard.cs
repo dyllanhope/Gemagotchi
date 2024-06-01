@@ -51,7 +51,6 @@ public class GameBoard : MonoBehaviour
                     return;
                 }
                 Gems gem = hit.collider.gameObject.GetComponent<Gems>();
-                Debug.Log("I have clicked a gem, it is: " + gem.gameObject);
 
                 SelectGem(gem);
             }
@@ -83,12 +82,7 @@ public class GameBoard : MonoBehaviour
 
         if (CheckBoard())
         {
-            Debug.Log("There are matches, re-initialising the board..");
             InitialliseBoard();
-        }
-        else
-        {
-            Debug.Log("There are no matches, starting game..");
         }
     }
 
@@ -190,7 +184,6 @@ public class GameBoard : MonoBehaviour
             {
                 if (gemBoard[x, y].gem == null)
                 {
-                    Debug.Log("The location x: " + x + " y: " + y + " is empty, attempting to refill");
                     RefillGem(x, y);
                 }
             }
@@ -265,7 +258,6 @@ public class GameBoard : MonoBehaviour
 
                 if (extraConnnectedGems.Count >= 2)
                 {
-                    Debug.Log("I have a super horizontal match");
                     extraConnnectedGems.AddRange(_matchedResults.connectedGems);
 
                     return new MatchResult
@@ -291,7 +283,6 @@ public class GameBoard : MonoBehaviour
 
                 if (extraConnnectedGems.Count >= 2)
                 {
-                    Debug.Log("I have a super vertical match");
                     extraConnnectedGems.AddRange(_matchedResults.connectedGems);
 
                     return new MatchResult
@@ -313,7 +304,6 @@ public class GameBoard : MonoBehaviour
     MatchResult IsConnected(Gems gem)
     {
         List<Gems> connectedGems = new();
-        GemType gemType = gem.gemType;
 
         connectedGems.Add(gem);
 
@@ -323,8 +313,6 @@ public class GameBoard : MonoBehaviour
         CheckDirection(gem, new Vector2Int(-1, 0), connectedGems);
         if (connectedGems.Count == 3)
         {
-            Debug.Log("Normal horizontal match found, the gem type is: " + connectedGems[0].gemType);
-
             return new MatchResult
             {
                 connectedGems = connectedGems,
@@ -333,8 +321,6 @@ public class GameBoard : MonoBehaviour
         }
         else if (connectedGems.Count > 3)
         {
-            Debug.Log("Long horizontal match found, the gem type is: " + connectedGems[0].gemType);
-
             return new MatchResult
             {
                 connectedGems = connectedGems,
@@ -351,8 +337,6 @@ public class GameBoard : MonoBehaviour
         CheckDirection(gem, new Vector2Int(0, -1), connectedGems);
         if (connectedGems.Count == 3)
         {
-            Debug.Log("Normal vertical match found, the gem type is: " + connectedGems[0].gemType);
-
             return new MatchResult
             {
                 connectedGems = connectedGems,
@@ -361,8 +345,6 @@ public class GameBoard : MonoBehaviour
         }
         else if (connectedGems.Count > 3)
         {
-            Debug.Log("Long vertical match found, the gem type is: " + connectedGems[0].gemType);
-
             return new MatchResult
             {
                 connectedGems = connectedGems,
@@ -415,7 +397,6 @@ public class GameBoard : MonoBehaviour
     {
         if (selectedGem == null)
         {
-            Debug.Log(gem);
             selectedGem = gem;
         }
         else if (selectedGem == gem)

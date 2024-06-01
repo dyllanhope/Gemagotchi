@@ -51,33 +51,38 @@ public class GameManager : MonoBehaviour
     }
     public void CheckMamaGatchiUpgrade()
     {
+        bool winState = false;
         int tempIndex = -1;
         int currentIndex = mamaGotchiManager.GetCurrentIndex();
 
-        if (points >= goal * 0.2)
+        if (points >= goal)
         {
-            tempIndex = 0;
+            winState = true;
+            tempIndex = 5;
         }
-        if (points >= goal * 0.4)
-        {
-            tempIndex = 1;
-        }
-        if (points >= goal * 0.6)
-        {
-            tempIndex = 2;
-        }
-        if (points >= goal * 0.8)
-        {
-            tempIndex = 3;
-        }
-        if (points >= goal * 0.95)
+        else if(points >= goal * 0.80)
         {
             tempIndex = 4;
         }
-
+        else if (points >= goal * 0.64)
+        {
+            tempIndex = 3;
+        }
+        else if (points >= goal * 0.48)
+        {
+            tempIndex = 2;
+        }
+        else if (points >= goal * 0.32)
+        {
+            tempIndex = 1;
+        }
+        else if (points >= goal * 0.16)
+        {
+            tempIndex = 0;
+        }
         if (tempIndex > currentIndex)
         {
-            mamaGotchiManager.UpgradeMamaGatchi();
+            mamaGotchiManager.UpgradeMamaGatchi(winState);
         }
     }
 
